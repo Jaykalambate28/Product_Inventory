@@ -1,5 +1,7 @@
 <script setup>
 
+const { canEditInventory, canAccessSales, username, role, logout } = useAuth()
+
 const model = ref('')
 const count = ref(0)
 
@@ -70,78 +72,164 @@ const editProduct = async (product) => {
 
 <template>
 
-<div class="container">
+<div class="page">
 
-  <h1>Inventory Management</h1>
+  <nav class="navbar">
+    <div class="nav-left">
+      <strong>Inventory & Sales</strong>
+    </div>
+    <div class="nav-links">
+      <NuxtLink to="/inventory" class="nav-link active-link">Inventory</NuxtLink>
+      <NuxtLink v-if="canAccessSales" to="/sales" class="nav-link">Sales</NuxtLink>
+    </div>
+    <div class="nav-right">
+      <span class="user-info">{{ username }} ({{ role }})</span>
+      <button class="logout-btn" @click="logout">Logout</button>
+    </div>
+  </nav>
 
-  <div class="form">
+  <div class="container">
 
-    <input
-      v-model="model"
-      placeholder="Model Name"
-    />
+    <h1>Inventory Management</h1>
 
-    <input
-      v-model="count"
-      type="number"
-      placeholder="Count"
-    />
+    <div v-if="canEditInventory" class="form">
 
-    <button @click="addProduct">
-      Add Product
-    </button>
+      <input
+        v-model="model"
+        placeholder="Model Name"
+      />
+
+      <input
+        v-model="count"
+        type="number"
+        placeholder="Count"
+      />
+
+      <button @click="addProduct">
+        Add Product
+      </button>
+
+    </div>
+
+    <table border="1">
+
+      <thead>
+        <tr>
+          <th>Product ID</th>
+          <th>Model</th>
+          <th>Count</th>
+          <th v-if="canEditInventory">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr
+          v-for="product in products"
+          :key="product.id"
+        >
+
+          <td>{{ product.product_id }}</td>
+          <td>{{ product.model }}</td>
+          <td>{{ product.count }}</td>
+
+          <td v-if="canEditInventory">
+
+            <button
+              @click="editProduct(product)"
+            >
+              Edit
+            </button>
+
+            <button
+              @click="deleteProduct(product.id)"
+            >
+              Delete
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
 
   </div>
-
-  <table border="1">
-
-    <thead>
-      <tr>
-        <th>Product ID</th>
-        <th>Model</th>
-        <th>Count</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-
-      <tr
-        v-for="product in products"
-        :key="product.id"
-      >
-
-        <td>{{ product.product_id }}</td>
-        <td>{{ product.model }}</td>
-        <td>{{ product.count }}</td>
-
-        <td>
-
-          <button
-            @click="editProduct(product)"
-          >
-            Edit
-          </button>
-
-          <button
-            @click="deleteProduct(product.id)"
-          >
-            Delete
-          </button>
-
-        </td>
-
-      </tr>
-
-    </tbody>
-
-  </table>
 
 </div>
 
 </template>
 
 <style scoped>
+
+.page {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 12px 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-left strong {
+  font-size: 18px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #555;
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+
+.nav-link:hover {
+  background: #e8e8e8;
+}
+
+.active-link {
+  background: #4a90d9;
+  color: #fff;
+}
+
+.active-link:hover {
+  background: #357abd;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-info {
+  font-size: 14px;
+  color: #555;
+}
+
+.logout-btn {
+  padding: 6px 14px;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
 
 .container {
   max-width: 900px;
@@ -167,6 +255,7 @@ button {
 table {
   width: 100%;
   border-collapse: collapse;
+  background: #fff;
 }
 
 th, td {
