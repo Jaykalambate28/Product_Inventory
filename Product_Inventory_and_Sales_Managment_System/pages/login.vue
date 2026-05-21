@@ -1,5 +1,9 @@
 <script setup>
 
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
+
 const { login } = useAuth()
 
 const username = ref('')
@@ -8,21 +12,43 @@ const errorMsg = ref('')
 const loading = ref(false)
 
 const handleLogin = async () => {
+
   errorMsg.value = ''
   loading.value = true
 
   try {
-    const data = await login(username.value, password.value)
+
+    const data = await login(
+      username.value,
+      password.value
+    )
+
 
     // Redirect based on role
     if (data.role === 'sales') {
+
       navigateTo('/sales')
+      toast.success('Login successful! Welcome to the Sales Dashboard.')
+
     } else {
+
       navigateTo('/inventory')
+      toast.success('Login successful! Welcome to the Inventory Management.')
     }
+    
+
   } catch (err) {
-    errorMsg.value = err?.data?.statusMessage || 'Login failed'
+
+    const message =
+      err?.data?.statusMessage || 'Login failed'
+
+    errorMsg.value = message
+
+    // Error toast
+    toast.error(message)
+
   } finally {
+
     loading.value = false
   }
 }
@@ -103,7 +129,7 @@ const handleLogin = async () => {
 }
 
 .login-card {
-  background: #fff;
+  background: #afabab;
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);

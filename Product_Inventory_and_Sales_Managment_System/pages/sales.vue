@@ -181,7 +181,7 @@ const formatDate = (dateStr) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
+  background: #ada9a9;
   padding: 12px 24px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }

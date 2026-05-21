@@ -172,7 +172,7 @@ const editProduct = async (product) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
+  background: #8f8b8b;
   padding: 12px 24px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
